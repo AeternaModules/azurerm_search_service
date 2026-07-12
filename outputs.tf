@@ -1,3 +1,7 @@
+output "search_services_id" {
+  description = "Map of id values across all search_services, keyed the same as var.search_services"
+  value       = { for k, v in azurerm_search_service.search_services : k => v.id }
+}
 output "search_services_allowed_ips" {
   description = "Map of allowed_ips values across all search_services, keyed the same as var.search_services"
   value       = { for k, v in azurerm_search_service.search_services : k => v.allowed_ips }

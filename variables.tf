@@ -30,13 +30,13 @@ EOT
     sku                                      = string
     allowed_ips                              = optional(set(string))
     authentication_failure_mode              = optional(string)
-    customer_managed_key_enforcement_enabled = optional(bool)   # Default: false
-    hosting_mode                             = optional(string) # Default: "Default"
-    local_authentication_enabled             = optional(bool)   # Default: true
-    network_rule_bypass_option               = optional(string) # Default: "None"
-    partition_count                          = optional(number) # Default: 1
-    public_network_access_enabled            = optional(bool)   # Default: true
-    replica_count                            = optional(number) # Default: 1
+    customer_managed_key_enforcement_enabled = optional(bool)
+    hosting_mode                             = optional(string)
+    local_authentication_enabled             = optional(bool)
+    network_rule_bypass_option               = optional(string)
+    partition_count                          = optional(number)
+    public_network_access_enabled            = optional(bool)
+    replica_count                            = optional(number)
     semantic_search_sku                      = optional(string)
     tags                                     = optional(map(string))
     identity = optional(object({
@@ -44,14 +44,6 @@ EOT
       type         = string
     }))
   }))
-  validation {
-    condition = alltrue([
-      for k, v in var.search_services : (
-        v.replica_count == null || (v.replica_count >= 1 && v.replica_count <= 12)
-      )
-    ])
-    error_message = "must be between 1 and 12"
-  }
   # --- Unconfirmed validation candidates, derived from azurerm_search_service's provider source ---
   # Not auto-enabled: either a bespoke provider validator we can't safely translate,
   # or a path that crosses a list-typed block (needs its own for_each wrapping).
@@ -74,6 +66,9 @@ EOT
   #   source:    [from resourcegroups.ValidateName] !matched
   # path: sku
   #   source:    validation.StringInSlice value list is not a literal []string - likely a generated PossibleValuesFor*() helper; resolve separately
+  # path: replica_count
+  #   condition: value >= 1 && value <= 12
+  #   message:   must be between 1 and 12
   # path: partition_count
   #   source:    validation.IntInSlice(...) - no translation rule yet, add one
   # path: authentication_failure_mode

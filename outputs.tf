@@ -28,7 +28,7 @@ output "search_services_hosting_mode" {
 }
 output "search_services_identity" {
   description = "Map of identity values across all search_services, keyed the same as var.search_services"
-  value       = { for k, v in azurerm_search_service.search_services : k => v.identity if v.identity != null && length(v.identity) > 0 }
+  value       = { for k, v in azurerm_search_service.search_services : k => one(v.identity) if v.identity != null && length(v.identity) > 0 }
 }
 output "search_services_local_authentication_enabled" {
   description = "Map of local_authentication_enabled values across all search_services, keyed the same as var.search_services"
